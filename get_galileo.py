@@ -1,4 +1,6 @@
 import requests
+import re
+from bs4 import BeautifulSoup
 
 
 def write_file(page, result):
@@ -8,7 +10,7 @@ def write_file(page, result):
 
 
 def get_request(url):
-    result = requests.get(url)
+    result = requests.get(url, allow_redirects=False)
     return result.text
 
 
@@ -23,12 +25,22 @@ page4 = "http://law2.umkc.edu/faculty/projects/ftrials/galileo/dialogue4.html"
 
 pages = [page1, page2, page3, page4]
 
+
+result = get_request(page1)
+soup = BeautifulSoup(result,'html.parser')
+salv = soup.find_all('b', string=re.compile("^SALV"))
+for s in salv:
+    print("############################")
+    print(s.next_sibling)
+    
+
+'''
 i = 1
 for pg in pages:
     result = get_request(pg)
     write_file("page" + str(i) + ".html", result)
     i = i + 1
-
+'''
 
 
 '''
