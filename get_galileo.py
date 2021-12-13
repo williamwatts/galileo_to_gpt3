@@ -32,7 +32,6 @@ salv = soup.find_all('b', string=re.compile("^SALV"))
 for s in salv:
     print("############################")
     print(s.next_sibling)
-    
 
 '''
 i = 1
@@ -41,7 +40,6 @@ for pg in pages:
     write_file("page" + str(i) + ".html", result)
     i = i + 1
 '''
-
 
 '''
 param = "page1.html"
