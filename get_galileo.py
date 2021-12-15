@@ -25,13 +25,16 @@ page4 = "http://law2.umkc.edu/faculty/projects/ftrials/galileo/dialogue4.html"
 
 pages = [page1, page2, page3, page4]
 
+for pg in pages:
+    result = get_request(pg)
+    soup = BeautifulSoup(result,'html.parser')
+    salv = soup.find_all('b', string=re.compile("^SALV|SIMP|SAGR"))
+    for s in salv:
+        print(s) 
+        for sibling in s.next_siblings:
+            print(sibling)
 
-result = get_request(page1)
-soup = BeautifulSoup(result,'html.parser')
-salv = soup.find_all('b', string=re.compile("^SALV"))
-for s in salv:
-    print("############################")
-    print(s.next_sibling)
+
 
 '''
 i = 1
