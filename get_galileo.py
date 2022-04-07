@@ -1,5 +1,6 @@
 import requests
 import re
+import json
 from bs4 import BeautifulSoup
 
 
@@ -25,14 +26,44 @@ page4 = "http://law2.umkc.edu/faculty/projects/ftrials/galileo/dialogue4.html"
 
 pages = [page1, page2, page3, page4]
 
-for pg in pages:
-    result = get_request(pg)
-    soup = BeautifulSoup(result,'html.parser')
-    salv = soup.find_all('b', string=re.compile("^SALV|SIMP|SAGR"))
-    for s in salv:
-        print(s) 
-        for sibling in s.next_siblings:
-            print(sibling)
+def parse_page():
+
+    download = False
+
+    if download == True:
+        for pg in pages:
+            result = get_request(pg)
+    else:
+        # open files loop through, return object for parsing
+        soup = BeautifulSoup(result,'html.parser')
+        # salv = soup.find_all('b', string=re.compile("^READER|SALV|SIMP|SAGR"))
+        salv = soup.find_all('b',string=re.compile("SALV"))
+        for s in salv:
+            print(s.next_sibling)
+
+
+def text_to_jsonl():
+    # Generate a list of dictionaries
+    lines = []
+    with open("text.txt", encoding="utf8") as f:
+        for line in f.read().splitlines():
+            if line:
+                lines.append({"text": line})
+
+    # Convert to a list of JSON strings
+    json_lines = [json.dumps(l) for l in lines]
+
+    # Join lines and save to .jsonl file
+    json_data = '\n'.join(json_lines)
+    with open('my_file.jsonl', 'w') as f:
+        f.write(json_data)            
+
+def main():
+    print("parse book to json lines")
+
+
+if __name__ == "__main__":
+    main()
 
 
 
