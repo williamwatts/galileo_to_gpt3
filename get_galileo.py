@@ -1,6 +1,7 @@
 import requests
 import re
 import json
+import glob
 from bs4 import BeautifulSoup
 
 
@@ -26,6 +27,9 @@ page4 = "http://law2.umkc.edu/faculty/projects/ftrials/galileo/dialogue4.html"
 
 pages = [page1, page2, page3, page4]
 
+def sorter(item):
+    return item[4]
+
 def parse_page():
 
     download = False
@@ -34,12 +38,16 @@ def parse_page():
         for pg in pages:
             result = get_request(pg)
     else:
-        # open files loop through, return object for parsing
-        soup = BeautifulSoup(result,'html.parser')
-        # salv = soup.find_all('b', string=re.compile("^READER|SALV|SIMP|SAGR"))
-        salv = soup.find_all('b',string=re.compile("SALV"))
-        for s in salv:
-            print(s.next_sibling)
+        files = sorted(glob.glob('*.html'), key=sorter)
+
+        for fi in files:
+            with open(fi) as f:
+                content = f.read()
+                soup = BeautifulSoup(content,'html.parser')
+                # salv = soup.find_all('b', string=re.compile("^READER|SALV|SIMP|SAGR"))
+                salv = soup.find_all('b',string=re.compile("SALV|SALVIATI"))
+                for s in salv:
+                    print(s.next_sibling)
 
 
 def text_to_jsonl():
@@ -60,6 +68,7 @@ def text_to_jsonl():
 
 def main():
     print("parse book to json lines")
+    parse_page()
 
 
 if __name__ == "__main__":
